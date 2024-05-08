@@ -333,27 +333,14 @@ def main():
                 obstacles.remove(obstacle)
 #  回血道具
     # 在遊戲迴圈中生成道具
-        if len(items) == 0 and random.randint(0, 100) < 2:  # 機率2%
+        random_item = random.randint(0, 1)
+    # 在遊戲迴圈中生成道具
+        if len(items) == 0 and random.randint(0, 1000) < 2 and random_item == 0:  # 機率2%
             items.append(Heart(ITEM))  # 加入新的道具到道具列表中
-
-    # 在遊戲迴圈中更新和繪製道具
-        for item in items:
-            item.update()
-            if item.rect.colliderect(obstacle.rect) == False:
-                item.draw(window)
-            else:
-                items.remove(item)
-
-    # 檢測角色和道具的碰撞
-            if player.ch_rect.colliderect(item.rect):
-                life += 1  # 增加生命值
-                items.remove(item)  # 移除已經碰撞的道具
-            if item.rect.x < -item.rect.width:
-                items.remove(item)
-#  無敵星星
-        if len(items) == 0 and random.randint(0, 100) < 1:  # 機率1%
+        elif len(items) == 0 and random.randint(0, 1000) < 10 and random_item == 1:  # 機率1%
             items.append(star(ITEM))  # 加入新的道具到道具列表中
 
+
     # 在遊戲迴圈中更新和繪製道具
         for item in items:
             item.update()
@@ -363,11 +350,14 @@ def main():
                 items.remove(item)
 
     # 檢測角色和道具的碰撞
-            if player.ch_rect.colliderect(item.rect):
-                invincible_timer = 300   #無敵
+            if player.ch_rect.colliderect(item.rect) and random_item == 0:
+                life += 1  # 增加生命值
                 items.remove(item)  # 移除已經碰撞的道具
+            elif player.ch_rect.colliderect(item.rect) and random_item == 1:
+                invincible_timer = 600
             if item.rect.x < -item.rect.width:
                 items.remove(item)
+
 
         pygame.display.update()
         clock.tick(60)
