@@ -33,8 +33,8 @@ SMALLOBSTACLE = [pygame.image.load(os.path.join("Documents\\GitHub\\final\\image
              pygame.image.load(os.path.join("Documents\\GitHub\\final\\image/smallobstacle", "obstacle2.png"))]
 FLYOBSTACLE = [pygame.image.load(os.path.join("Documents\\GitHub\\final\\image/flyobstacle", "obstacle1.png")),
              pygame.image.load(os.path.join("Documents\\GitHub\\final\\image/flyobstacle", "obstacle2.png"))]
-           #  小1：68*71 小2: 40*71 大1：105*95 大2：99*95 大3 48*95
-# 建立視窗(背景長/寬 ＝ 1023/660)
+           #  小：68*71  大：99*95 
+# 建立視窗(背景長/寬 ＝ 1000/660)
 window_height = 650
 window_width = 1000
 window = pygame.display.set_mode((window_width, window_height))
@@ -61,12 +61,11 @@ class Charactor:
     y_ch_posduck = 510
     jump_val = 7
     def __init__(self):
-         # 定義變數
         self.ch_duck = False
         self.ch_run = True
         self.ch_jump = False
         self.step_index = 0  # 腳步動畫
-        self.jump_vel = self.jump_val  # 跳上、下的速度
+        self.fall = self.jump_val  # fall:高度變化幅度
 
         # 圖片
         self.duck_img_list = DUCKING_LIST
@@ -97,11 +96,11 @@ class Charactor:
     def jump(self):
         self.image = self.jump_img
         if self.ch_jump:
-            self.ch_rect.y -= self.jump_vel * 4  
-            self.jump_vel -= 0.5  
-        if self.jump_vel < - self.jump_val:
+            self.ch_rect.y -= self.fall * 4  
+            self.fall -= 0.5  
+        if self.fall < - self.jump_val:
             self.ch_jump = False
-            self.jump_vel = self.jump_val
+            self.fall = self.jump_val
     def update(self, user_input):
         if user_input[pygame.K_UP] or user_input[pygame.K_SPACE] and not self.ch_jump:
             self.ch_duck = False
@@ -127,6 +126,8 @@ class Charactor:
             self.step_index = 0
         if self.invincible_timer > 0:
             self.invincible_timer -= 1
+
+       
     def take_damage(self):  # 無敵狀態
         if self.invincible_timer <= 0:  # 如果不在無敵時間內
             self.invincible_timer = 30 
