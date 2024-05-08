@@ -33,8 +33,8 @@ SMALLOBSTACLE = [pygame.image.load(os.path.join("Documents\\GitHub\\final\\image
              pygame.image.load(os.path.join("Documents\\GitHub\\final\\image/smallobstacle", "obstacle2.png"))]
 FLYOBSTACLE = [pygame.image.load(os.path.join("Documents\\GitHub\\final\\image/flyobstacle", "obstacle1.png")),
              pygame.image.load(os.path.join("Documents\\GitHub\\final\\image/flyobstacle", "obstacle2.png"))]
-           #  小1：68*71 小2: 40*71 大1：105*95 大2：99*95 大3 48*95
-# 建立視窗(背景長/寬 ＝ 1023/660)
+                      #  小：68*71 大：99*95 
+# 建立視窗(背景長/寬 ＝ 1000/660)
 window_height = 650
 window_width = 1000
 window = pygame.display.set_mode((window_width, window_height))
@@ -66,7 +66,7 @@ class Charactor:
         self.ch_run = True
         self.ch_jump = False
         self.step_index = 0  # 腳步動畫
-        self.jump_vel = self.jump_val  # 跳上、下的速度
+        self.fall = self.jump_val  # fall:高度變化幅度
 
         # 圖片
         self.duck_img_list = DUCKING_LIST
@@ -97,11 +97,11 @@ class Charactor:
     def jump(self):
         self.image = self.jump_img
         if self.ch_jump:
-            self.ch_rect.y -= self.jump_vel * 4  
-            self.jump_vel -= 0.5  
-        if self.jump_vel < - self.jump_val:
+            self.ch_rect.y -= self.fall * 4  
+            self.fall -= 0.5  
+        if self.fall < - self.jump_val:
             self.ch_jump = False
-            self.jump_vel = self.jump_val
+            self.fall = self.jump_val
     def update(self, user_input):
         if user_input[pygame.K_UP] or user_input[pygame.K_SPACE] and not self.ch_jump:
             self.ch_duck = False
@@ -332,28 +332,16 @@ def main():
             if obstacle.rect.x < -obstacle.rect.width:
                 obstacles.remove(obstacle)
 #  回血道具
+    # # 在遊戲迴圈中生成道具
+        道具
+        random_item = random.randint(0, 1)
     # 在遊戲迴圈中生成道具
-        if len(items) == 0 and random.randint(0, 100) < 2:  # 機率2%
+        if len(items) == 0 and random.randint(0, 1000) < 2 and random_item == 0:  # 機率2%
             items.append(Heart(ITEM))  # 加入新的道具到道具列表中
-
-    # 在遊戲迴圈中更新和繪製道具
-        for item in items:
-            item.update()
-            if item.rect.colliderect(obstacle.rect) == False:
-                item.draw(window)
-            else:
-                items.remove(item)
-
-    # 檢測角色和道具的碰撞
-            if player.ch_rect.colliderect(item.rect):
-                life += 1  # 增加生命值
-                items.remove(item)  # 移除已經碰撞的道具
-            if item.rect.x < -item.rect.width:
-                items.remove(item)
-#  無敵星星
-        if len(items) == 0 and random.randint(0, 100) < 1:  # 機率1%
+        elif len(items) == 0 and random.randint(0, 1000) < 10 and random_item == 1:  # 機率1%
             items.append(star(ITEM))  # 加入新的道具到道具列表中
 
+
     # 在遊戲迴圈中更新和繪製道具
         for item in items:
             item.update()
@@ -363,9 +351,11 @@ def main():
                 items.remove(item)
 
     # 檢測角色和道具的碰撞
-            if player.ch_rect.colliderect(item.rect):
-                invincible_timer = 300   #無敵
+            if player.ch_rect.colliderect(item.rect) and random_item == 0:
+                life += 1  # 增加生命值
                 items.remove(item)  # 移除已經碰撞的道具
+            elif player.ch_rect.colliderect(item.rect) and random_item == 1:
+                invincible_timer = 600
             if item.rect.x < -item.rect.width:
                 items.remove(item)
 
